@@ -10,7 +10,7 @@
 
 <span class="target" id="module-sqlbuilder.builders"></span>
 
-This module procedurally generates parameterized SQL statements. It is intended for use with Python DB API compatible libraries. It currently supports SELECT, UPDATE, INSERT INTO, and DELETE statements. See below for usage details and examples.
+This module procedurally generates parameterized SQL statements from structured Python data. It is intended for use with Python DB API compatible libraries. It currently supports SELECT, UPDATE, INSERT INTO, and DELETE statements. See below for usage details and examples.
 
 To install, open SQLBuilder directory in your terminal and run setup.py install. The module is written in pure Python with no outside dependencies for version 3.7.3.
 
