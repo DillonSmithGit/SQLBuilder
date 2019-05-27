@@ -1,0 +1,310 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to the documentation for the SQLBuilder Package! &#8212; SQLBuilder 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" gen="_static/jquery.js"></script>
+    <script type="text/javascript" gen="_static/underscore.js"></script>
+    <script type="text/javascript" gen="_static/doctools.js"></script>
+    <script type="text/javascript" gen="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-the-documentation-for-the-sqlbuilder-package">
+<h1>Welcome to the documentation for the SQLBuilder Package!<a class="headerlink" href="#welcome-to-the-documentation-for-the-sqlbuilder-package" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-sqlbuilder.builders"></span><p>This module procedurally generates parameterized SQL statements. It is intended for use with Python DB API compatible
+libraries.
+It currently supports SELECT, UPDATE, INSERT INTO, and DELETE statements. See below for usage details and examples.</p>
+<p>To install, open SQLBuilder directory in your terminal and run setup.py install. The module is written in pure Python with
+no outside dependencies for version 3.7.3.</p>
+<p>General example of syntactic structure for this module</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sqlbuilder.builders</span> <span class="k">as</span> <span class="nn">builders</span>
+
+<span class="n">condition</span> <span class="o">=</span> <span class="n">builders</span><span class="o">.</span><span class="n">Condition</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="n">builders</span><span class="o">.</span><span class="n">Select</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">update</span> <span class="o">=</span> <span class="n">builders</span><span class="o">.</span><span class="n">Update</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">insertInto</span> <span class="o">=</span> <span class="n">builders</span><span class="o">.</span><span class="n">InsertInto</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">delete</span> <span class="o">=</span> <span class="n">builders</span><span class="o">.</span><span class="n">Delete</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="sqlbuilder.builders.Statement">
+<em class="property">class </em><code class="descclassname">sqlbuilder.builders.</code><code class="descname">Statement</code><span class="sig-paren">(</span><em>type</em>, <em>table</em>, <em>condition=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Statement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is the superclass used as a basis for our statement classes. Users should not instantiate this class directly.
+Rather, one of the more specific subclasses should be used.</p>
+<dl class="method">
+<dt id="sqlbuilder.builders.Statement.add_condition">
+<code class="descname">add_condition</code><span class="sig-paren">(</span><em>condition</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Statement.add_condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attaches a Condition object to a previously instantiated Statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>condition</strong> – (Condition) object that contains specifications for fields that should be operated on by
+the Statements they are associated with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sqlbuilder.builders.Select">
+<em class="property">class </em><code class="descclassname">sqlbuilder.builders.</code><code class="descname">Select</code><span class="sig-paren">(</span><em>table</em>, <em>fields</em>, <em>condition=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sqlbuilder.builders.Statement" title="sqlbuilder.builders.Statement"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlbuilder.builders.Statement</span></code></a></p>
+<p>This is the class used to construct SELECT statements.</p>
+<p>Each instance contains a table name and list/tuple of fields to select data from. Optionally, they may also include
+a Condition object specifying which data should be selected. The class also has an inner join method which allows
+users to select data from two separate tables with one command.</p>
+<p>E.g. to select the fields ‘id’, ‘age’, and ‘gender’ from table ‘demographics’ where the participant’s age is higher than 20:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">select</span> <span class="o">=</span> <span class="n">Select</span><span class="p">(</span><span class="s1">&#39;demographics&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;age&#39;</span><span class="p">,</span><span class="s1">&#39;gender&#39;</span><span class="p">],</span>
+                <span class="n">condition</span> <span class="o">=</span> <span class="n">Condition</span><span class="p">([{</span><span class="s1">&#39;age&#39;</span><span class="p">:(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">)}]))</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">crsr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="nb">input</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">crsr</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>TODO:</dt><dd><ol class="arabic simple">
+<li><p>Expand inner_join functionality to support selecting data from an arbitrary number of tables.</p></li>
+<li><p>Include support for other types of joins.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="method">
+<dt id="sqlbuilder.builders.Select.generate">
+<code class="descname">generate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Select.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates parameterized sql statement and list of params for use with a Python DB API compatible library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+<p>(str) SQL statement used to select specified data.</p>
+<p>(list) containing parameters to be supplied with the accompanying statement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sqlbuilder.builders.Select.inner_join">
+<code class="descname">inner_join</code><span class="sig-paren">(</span><em>statementToJoin</em>, <em>joinKey</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Select.inner_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes as input a second select statement and creates an inner join by combining them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statementToJoin</strong> – (Select) a second Select object to construct an Inner Join with.</p></li>
+<li><p><strong>joinKey</strong> – (list/tuple) a 3-element list used to specify how records from the two tables should be unified.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The argument (‘id’,’=’,’id’), for example, would correspond to FROM Table1 INNER JOIN Table2 ON Table1.id = Table2.id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(str) SQL statement that selects all specified fields from both tables, conjoined via the joinKey, which satisfy all</p>
+</dd>
+</dl>
+<p>conditions of both statements.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sqlbuilder.builders.Update">
+<em class="property">class </em><code class="descclassname">sqlbuilder.builders.</code><code class="descname">Update</code><span class="sig-paren">(</span><em>table</em>, <em>fields</em>, <em>values</em>, <em>condition=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sqlbuilder.builders.Statement" title="sqlbuilder.builders.Statement"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlbuilder.builders.Statement</span></code></a></p>
+<p>This is the class used to construct UPDATE statements.</p>
+<p>Each instance contains a table, set of fields, set of values, and optionally, a condition.</p>
+<p>E.g. to loop through an array of tuples containing ids, ages, and genders of participants and update your database,
+you could do the following</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">demoData</span><span class="p">:</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="n">Update</span><span class="p">(</span><span class="s1">&#39;demographics&#39;</span><span class="p">,[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span><span class="s1">&#39;gender&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">Condition</span><span class="p">([{</span><span class="s1">&#39;id&#39;</span><span class="p">:(</span><span class="s1">&#39;=&#39;</span><span class="p">,</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])}]))</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+    <span class="n">crsr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="nb">input</span><span class="p">)</span>
+<span class="n">crsr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;commit;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sqlbuilder.builders.Update.no_condition_warning">
+<code class="descname">no_condition_warning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Update.no_condition_warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>If an Update object is instantiated without a condition this warning is given. This is a safe guard to prevent
+users from accidentally updating every record in their table if they did not mean to do so.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sqlbuilder.builders.Update.generate">
+<code class="descname">generate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Update.generate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+<p>(str) SQL statement used to update specified data.
+(list) containing parameters to be supplied with accompanying statement.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sqlbuilder.builders.InsertInto">
+<em class="property">class </em><code class="descclassname">sqlbuilder.builders.</code><code class="descname">InsertInto</code><span class="sig-paren">(</span><em>table</em>, <em>fields</em>, <em>values</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.InsertInto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sqlbuilder.builders.Statement" title="sqlbuilder.builders.Statement"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlbuilder.builders.Statement</span></code></a></p>
+<p>This is the class used to construct INSERT INTO statements.</p>
+<p>Each instance contains a table name, array with fields to populate when creating records, and respective values to
+populate fields with.</p>
+<p>E.g. to loop through an array of tuples containing ids, ages, and genders of participants and insert records into your database,
+you could do the following</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">demoData</span><span class="p">:</span>
+    <span class="n">insert</span> <span class="o">=</span> <span class="n">InsertInto</span><span class="p">(</span><span class="s1">&#39;demographics&#39;</span><span class="p">,[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;age&#39;</span><span class="p">,</span><span class="s1">&#39;gender&#39;</span><span class="p">],[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">insert</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+    <span class="n">crsr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="nb">input</span><span class="p">)</span>
+<span class="n">crsr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;commit;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sqlbuilder.builders.InsertInto.generate">
+<code class="descname">generate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.InsertInto.generate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+<p>(str) SQL statement used to update specified data.
+(list) containing parameters to be supplied with accompanying statement.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sqlbuilder.builders.Delete">
+<em class="property">class </em><code class="descclassname">sqlbuilder.builders.</code><code class="descname">Delete</code><span class="sig-paren">(</span><em>table</em>, <em>condition=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sqlbuilder.builders.Statement" title="sqlbuilder.builders.Statement"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlbuilder.builders.Statement</span></code></a></p>
+<p>This is the class used to construct DELETE statements.</p>
+<p>Each instance contains a table name and, optionally, a condition</p>
+<p>E.g. to delete all records from the table “demographics” with IDs below 20, you could do</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">delete</span> <span class="o">=</span> <span class="n">Delete</span><span class="p">(</span><span class="s1">&#39;demographics&#39;</span><span class="p">,</span><span class="n">condition</span> <span class="o">=</span> <span class="n">Condition</span><span class="p">([{</span><span class="s1">&#39;id&#39;</span><span class="p">:(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">)}]))</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">delete</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">crsr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="nb">input</span><span class="p">)</span>
+<span class="n">crsr</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;commit;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sqlbuilder.builders.Delete.no_condition_warning">
+<code class="descname">no_condition_warning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Delete.no_condition_warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>If a Delete object is instantiated without a condition this warning is given. This is a safe guard to prevent
+users from accidentally deleting every record in their table if they did not mean to do so.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sqlbuilder.builders.Delete.generate">
+<code class="descname">generate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Delete.generate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+<p>(str) SQL statement used to delete specified data.
+(list) containing parameters to be supplied with accompanying statement.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sqlbuilder.builders.Condition">
+<em class="property">class </em><code class="descclassname">sqlbuilder.builders.</code><code class="descname">Condition</code><span class="sig-paren">(</span><em>conditionSeed</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is used to construct the WHERE clauses for our statements. These are created through condition seeds. Currently,
+the seeds are in the form of lists of dicts. The key:value format for these dicts is FieldName: (Logical Operator, Value).
+This corresponds to one logical condition. A dict represents a set of logical tests which all must be true together to return
+a True value, i.e. they are “AND”-separated tests. Only one of the dicts within a list need to be evaluted as true for a given
+condition to be met, i.e. the list items themselves are “OR”-separated logical tests. Therefore, if I were to declare an instance
+with the following parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">myCondition</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">Condition</span><span class="p">([</span>
+                                <span class="p">{</span><span class="s1">&#39;Age&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                                <span class="s1">&#39;Id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)}</span>
+                                <span class="p">,</span>
+                                <span class="p">{</span><span class="s1">&#39;Race&#39;</span><span class="p">:(</span><span class="s1">&#39;=&#39;</span><span class="p">,</span><span class="s1">&#39;Caucasian&#39;</span><span class="p">)}</span>
+                                <span class="p">])</span>
+</pre></div>
+</div>
+<p>The string representation would be ‘(Age &gt; 10 AND Id &lt; 50) OR (Race = ‘Caucasian’)’</p>
+<p>NOTE: If you actually run this code, the output you will get from the Condition’s generate method will be ‘(Age &gt; ? AND Id &lt; ?) OR (Race = ?)’.
+This is because the module generates parameterized statements. If you used the condition in conjunction with a Statement object to form a statement,
+you would be given the values (10, 50, and ‘Caucasian’) in a list to use as parameters.</p>
+<dl class="method">
+<dt id="sqlbuilder.builders.Condition.initialize_params">
+<code class="descname">initialize_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Condition.initialize_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used by Statement objects to retrieve params from their Conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(List) containing parameters to be piped into DB.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="sqlbuilder.builders.Condition.generate">
+<code class="descname">generate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Condition.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used to generate string representation of clause
+:return: (str) WHERE clause generated from condition seed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sqlbuilder.builders.Condition.merge">
+<code class="descname">merge</code><span class="sig-paren">(</span><em>conditionToMerge</em><span class="sig-paren">)</span><a class="headerlink" href="#sqlbuilder.builders.Condition.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used for inner joins when both statements have conditions. Appends table names to condition fields to
+avoid ambiguity and merges both sets of conditions so that both must be true for data to be selected from resultant
+statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>conditionToMerge</strong> – (Condition) object to merge with.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(str) Where clause to be used with joined statements</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Dillon Smith.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/sqlbuilder.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
