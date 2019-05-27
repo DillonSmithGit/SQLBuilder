@@ -468,4 +468,4 @@ Method used for inner joins when both statements have conditions. Appends table 
 
 </div>
 
-<div class="footer">©2019, Dillon Smith. | 
+<div class="footer">©2019, Dillon Smith.
