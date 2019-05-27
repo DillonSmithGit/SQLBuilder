@@ -426,7 +426,7 @@ Method used to generate string representation of clause :return: (str) WHERE cla
 
 <dl class="method">
 
-<dt id="sqlbuilder.builders.Condition.merge">merge<span class="sig-paren">(</span>_conditionToMerge_<span class="sig-paren">)</span></dt>
+<dt id="sqlbuilder.builders.Condition.merge">merge<span class="sig-paren">(</span>conditionToMerge<span class="sig-paren">)</span></dt>
 
 <dd>
 
